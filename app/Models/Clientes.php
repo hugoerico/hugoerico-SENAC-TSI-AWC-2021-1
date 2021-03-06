@@ -13,7 +13,8 @@ class Clientes extends Model
 
     protected $table = 'Clientes';
 
-    public function vendas(){
-        return $this->hasMany(Vedas::class, 'cliente_id');
-    }
+	public function vendas(){
+
+		return $this->hasMany( Vendas::class, 'cliente_id');
+	}				
 }
