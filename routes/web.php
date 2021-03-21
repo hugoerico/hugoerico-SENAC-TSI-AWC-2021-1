@@ -17,5 +17,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::get('/avisos', function () {
-    return view('avisos');
+    return view('avisos', ['nome' => 'hugo', 'mostrar' =>true, 'avisos' =>[['id'=>1, 'texto'=>'Feriados agora'],['id'=>2, 'texto' =>'feriados semana que vem']]]);
+});
+Route::get('/principal', function (){
+    return view ('principal', ['msg' =>'Oiii', 'aviso'=>true, 'mostrar1' => 'Olha o Cachorro', 'mostrar2'=>'Olha o Gatinho']);
 });

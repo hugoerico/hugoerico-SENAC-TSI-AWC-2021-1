@@ -6,4 +6,21 @@
 @endsection
 @section('content')
     <p>Quadro de Avisos da Empresa</p>
+
+    <p>{{$nome}} olha aqui</p>
+
+    @if($mostrar)
+
+    @foreach($avisos as $aviso)
+
+    <p>aviso #{{$aviso['id']}}: {{$aviso['texto']}}</p>
+
+    @endforeach
+
+    @else
+    o aviso não sera exibido!
+
+    @endif
+
+
 @endsection
