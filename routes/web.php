@@ -2,24 +2,31 @@
 
 use Illuminate\Support\Facades\Route;
 
-use App\Htpp\Controllers\ClientesController;
 
 
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/avisos', function (){
-    return view('avisos', ['nome' => 'hugo', 'mostrar' =>true, 'avisos' =>[['id'=>1, 'texto'=>'Feriados agora'],['id'=>2, 'texto' =>'feriados semana que vem']]]);
+
+Route::get('/avisos', function(){
+        return view('avisos', array('nome' => 'hugo', 'mostrar' => true,'avisos' => array(	[	'id' => 1,'texto' => 'Feriados agora'],['id' => 2,'texto' => 'Feriado semana que vem'])));
 });
 
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+/*
 Route::group(['prefix' => 'clientes'], function (){
 
 	//Controlando o acesso com o middleware auth
-	Route::get('/listar',[App\Http\Controllers\ClientesController::class, 'listar'])->middleware('auth');
+	//Route::get('/listar',[App\Http\Controllers\ClientesController::class, 'listar'])->middleware('auth');
+
+	
+});
+*/
+Route::group(['middleware' => ['auth']], function(){
+	Route::resource('/clientes',App\Http\Controllers\ClientesController::class);
 });
 
 Route::group(['middleware' => ['auth']], function(){
