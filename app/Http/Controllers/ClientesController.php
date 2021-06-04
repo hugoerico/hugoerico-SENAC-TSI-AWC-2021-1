@@ -13,33 +13,44 @@ class ClientesController extends Controller
     use HasFactory;
     use HasRoles;
 
+	
+	//Essa é uma forma de controlar o acesso
+	public function __construct()
+	{
+		$this->middleware('permission:cliente-list',['only' => ['index','show']]);
+		$this->middleware('permission:cliente-create',['only' => ['create','store']]);
+		$this->middleware('permission:cliente-edit',['only' => ['edit','update']]);
+		$this->middleware('permission:cliente-delete',['only' => ['destroy']]);
+	}
 
-    //Essa é uma forma de controlar o acesso
-    public function __construct()
+    public function getCliente($id)
     {
-        $this->middleware('permission:cliente-list', ['only' => ['index', 'show']]);
-        $this->middleware('permission:cliente-create', ['only' => ['create', 'store']]);
-        $this->middleware('permission:cliente-edit', ['only' => ['edit', 'update']]);
-        $this->middleware('permission:cliente-delete', ['only' => ['destroy']]);
+        $cliente = Clientes::find($id);
+
+        return $cliente;
+    }
+
+    public function checkCliente(int $id)
+    {
+        $cliente = Clientes::find($id);
+
+        return $cliente ?? false;
     }
 
     public function listar()
     {
-        $clientes = Clientes::all();
+    	$clientes = Clientes::all();
 
-        return view('clientes.listar', ['clientes' => $clientes]);
+    	return view('clientes.listar', ['clientes' => $clientes]);
     }
 
-    public function index(Request $request)
+    public function index( Request $request)
     {
         $qtd_por_pagina = 5;
 
         $data = Clientes::orderBy('id', 'DESC')->paginate($qtd_por_pagina);
 
-        return view(
-            'clientes.index',
-            compact('data')
-        )->with('i', ($request->input('page', 1) - 1) * $qtd_por_pagina);
+        return view('clientes.index',compact('data'))-> with('i', ($request->input('page', 1) - 1) * $qtd_por_pagina);
     }
 
     /**
@@ -60,19 +71,14 @@ class ClientesController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate(
-            $request,
-            [
-                'nome' => 'required',
-                'email' => 'required|email|unique:users,email'
-            ]
-        );
+        $this->validate($request,
+                        ['nome' => 'required','email' => 'required|email|unique:users,email']);
 
         $input = $request->all();
 
         Clientes::create($input);
 
-        return redirect()->route('clientes.index')->with('success', 'Cliente criado com sucesso');
+        return redirect()->route('clientes.index')->with('success','Cliente criado com sucesso');
     }
 
     /**
@@ -110,13 +116,8 @@ class ClientesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate(
-            $request,
-            [
-                'nome' => 'required',
-                'email' => 'required|email|unique:users,email'
-            ]
-        );
+        $this->validate($request,
+                        ['nome' => 'required','email' => 'required|email|unique:users,email']);
 
         $input = $request->all();
 
@@ -137,6 +138,7 @@ class ClientesController extends Controller
     {
         Clientes::find($id)->delete();
 
-        return redirect()->route('clientes.index')->with('success', 'Cliente removido com sucesso');
-    }
+        return redirect()->route('clientes.index')->with('success','Cliente removido com sucesso');
+    }    
+
 }
